@@ -1,0 +1,69 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\<%modelName%>;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\<%modelName%>Request;
+
+class <%modelName%>Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return mixed
+     */
+    public function index()
+    {
+        return <%modelName%>::all();
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \App\Http\Requests\<%modelName%>Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(<%modelName%>Request $request)
+    {
+        return <%modelName%>::create($request->all());
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\<%modelName%> <%modelVariable%>
+     * @return \Illuminate\Http\Response
+     */
+    public function show(<%modelName%> <%modelVariable%>)
+    {
+        return response(<%modelVariable%>);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \App\Http\Requests\<%modelName%>Request $request
+     * @param  \App\<%modelName%> <%modelVariable%>
+     * @return \Illuminate\Http\Response
+     */
+    public function update(<%modelName%>Request $request, <%modelName%> <%modelVariable%>)
+    {
+        <%modelVariable%>->fill($request->all());
+        <%modelVariable%>->save();
+
+        return response(<%modelVariable%>->fresh());
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\<%modelName%> <%modelVariable%>
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(<%modelName%> <%modelVariable%>)
+    {
+        return response(<%modelVariable%>->delete());
+    }
+}

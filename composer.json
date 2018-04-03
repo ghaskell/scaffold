@@ -1,0 +1,51 @@
+{
+  "name": "ghaskell/scaffold",
+  "description": "A scaffold",
+  "license": "MIT",
+  "keywords": [
+    "scaffold"
+  ],
+  "type": "library",
+  "authors": [
+    {
+      "name": "George Haskell",
+      "email": "george@egroeg.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.0",
+    "illuminate/support": "~5.6.0"
+  },
+  "require-dev": {
+    "orchestra/testbench": "~3.6.0",
+    "phpunit/phpunit": "~7.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Ghaskell\\Scaffold\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Ghaskell\\Scaffold\\Tests\\": "tests"
+    },
+    "files": [
+      "vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"
+    ]
+  },
+  "scripts": {
+    "phpunit": "phpunit"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Ghaskell\\Scaffold\\ServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "preferred-install": "dist",
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
