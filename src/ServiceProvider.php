@@ -30,9 +30,5 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             self::CONFIG_PATH,
             'scaffold'
         );
-//
-//        $this->app->bind('scaffold', function () {
-//            return new Scaffold();
-//        });
     }
 }
