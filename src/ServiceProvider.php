@@ -19,6 +19,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                 ScaffoldGenerate::class,
             ]);
         }
+        $this->publishes([
+            __DIR__.'stubs' => app_path('stubs')
+        ], 'stubs');
     }
 
     public function register()
