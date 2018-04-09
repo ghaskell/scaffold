@@ -41,4 +41,3 @@ class <%modelName%> extends Model
 
     <%relationships%>
 }
-
