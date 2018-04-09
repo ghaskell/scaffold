@@ -187,22 +187,22 @@ class Scaffold
 
         $columnConfig = config("scaffold.columnTypes.$type");
 
-        if ($columnConfig['fillable']) {
+        if (!empty($columnConfig['fillable'])) {
             $this->model->fillable[] = $name;
         }
 
-        if ($columnConfig['dates']) {
+        if (!empty($columnConfig['dates'])) {
             $this->model->dates[] = $name;
         }
 
-        if ($columnConfig['touches']) {
+        if (!empty($columnConfig['touches'])) {
             $this->model->touches[] = $name;
         }
 
-        if ($columnConfig['casts']) {
+        if (!empty($columnConfig['casts'])) {
             $this->model->casts[$name] = $columnConfig['casts'];
         }
-        if ($columnConfig['rules']) {
+        if (!empty($columnConfig['rules'])) {
             $this->rules[$name] = $columnConfig['rules'];
         }
 
