@@ -235,12 +235,12 @@ class Scaffold
                 $path = app_path($this->model->name);
             } elseif (str_contains($method, "ApiController")) {
                 $this->files->makeDirectory(
-                    app_path("Http\Controllers\Api"), 0755, false, true
+                    app_path("Http/Controllers/Api"), 0755, false, true
                 );
                 $this->files->makeDirectory(app_path("Http\Controllers\Web"), 0755, false, true);
-                $path = app_path("Http\Controllers\Api\\".$this->model->name."Controller");
+                $path = app_path("Http/Controllers/Api/".$this->model->name."Controller");
             } elseif (str_contains($method, "Request")) {
-                $path = app_path("Http\Requests\\".$this->model->name."Request");
+                $path = app_path("Http/Requests/".$this->model->name."Request");
             } else {
                 $path = app_path();
             }
