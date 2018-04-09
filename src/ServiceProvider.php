@@ -23,7 +23,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             __DIR__.'/stubs' => app_path('Scaffold/stubs')
         ], 'Scaffold Stubs');
     }
-
     public function register()
     {
         $this->mergeConfigFrom(

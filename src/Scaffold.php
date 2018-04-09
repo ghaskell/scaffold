@@ -185,7 +185,7 @@ class Scaffold
         $column->name = $name;
         $column->type = $type;
 
-        $columnConfig = config("crudmaster.columnTypes.$type");
+        $columnConfig = config("scaffold.columnTypes.$type");
 
         if ($columnConfig['fillable']) {
             $this->model->fillable[] = $name;
@@ -254,7 +254,7 @@ class Scaffold
 
     protected function getStub($stub)
     {
-        return $this->files->get(app_path("CrudMaster/stubs/$stub.stub"));
+        return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
     }
 
     public function addRoutes()
