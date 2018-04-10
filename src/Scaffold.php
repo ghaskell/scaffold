@@ -241,31 +241,41 @@ class Scaffold
         if (starts_with($method, 'build')) {
             if (str_contains($method, "Model")) {
                 $path = app_path($this->model->name);
-                if($this->files->exists($path)) {
-                    $this->messages[] = "File {$this->model->name} already exists.";
+                if($this->files->exists("$path.php")) {
+                    $this->messages[] = "File {$this->model->name}.php already exists.";
                     return $this;
                 }
             } elseif (str_contains($method, "ApiController")) {
                 $path = app_path("Http/Controllers/Api/".$this->model->name."Controller");
+                if($this->files->exists("$path.php")) {
+                    $this->messages[] = "File {$this->model->name}Controller.php already exists.";
+                    return $this;
+                }
                 $this->files->makeDirectory(app_path("Http/Controllers/Api"), 0755, false, true);
                 $this->files->makeDirectory(app_path("Http/Controllers/Web"), 0755, false, true);
             } elseif (str_contains($method, "Request")) {
                 $path = app_path("Http/Requests/".$this->model->name."Request");
+                if($this->files->exists("$path.php")) {
+                    $this->messages[] = "File {$this->model->name}Request.php already exists.";
+                    return $this;
+                }
             } else {
                 $path = app_path();
+                if($this->files->exists("$path.php")) {
+                    $this->messages[] = "File {$this->model->name}.php already exists.";
+                    return $this;
+                }
             }
 
-            if($this->files->exists($path)) {
+            if($this->files->exists("$path.php")) {
                 $this->messages[] = "File {$this->model->name}Controller already exists.";
                 return $this;
             }
             $target = substr($method, 5);
             $content = $this->build($target);
             if($content) {
-                echo "1";
                 $this->files->put("$path.php", $content);
             } else {
-                echo "2";
                 $this->messages[] = "File stub $target not found.";
             }
             return $this;
