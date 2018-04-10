@@ -14,6 +14,7 @@ class Scaffold
     protected $columns;
     protected $variables;
     protected $migrationFileName;
+    protected $messages = [];
     protected $template;
 
 
@@ -233,18 +234,24 @@ class Scaffold
         if (starts_with($method, 'build')) {
             if (str_contains($method, "Model")) {
                 $path = app_path($this->model->name);
+                if($this->files->exists($path)) {
+                    $this->messages[] = "File {$this->model->name} already exists.";
+                    return $this;
+                }
             } elseif (str_contains($method, "ApiController")) {
-                $this->files->makeDirectory(
-                    app_path("Http/Controllers/Api"), 0755, false, true
-                );
-                $this->files->makeDirectory(app_path("Http\Controllers\Web"), 0755, false, true);
                 $path = app_path("Http/Controllers/Api/".$this->model->name."Controller");
+                $this->files->makeDirectory(app_path("Http/Controllers/Api"), 0755, false, true);
+                $this->files->makeDirectory(app_path("Http/Controllers/Web"), 0755, false, true);
             } elseif (str_contains($method, "Request")) {
                 $path = app_path("Http/Requests/".$this->model->name."Request");
             } else {
                 $path = app_path();
             }
 
+            if($this->files->exists($path)) {
+                $this->messages[] = "File {$this->model->name}Controller already exists.";
+                return $this;
+            }
             $target = substr($method, 5);
             $content = $this->build($target);
             $this->files->put("$path.php", $content);
@@ -254,6 +261,8 @@ class Scaffold
 
     protected function getStub($stub)
     {
+
+
         return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
     }
 

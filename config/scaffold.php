@@ -1,6 +1,8 @@
 <?php
 
 return [
+    'stubs' => [
+    ],
     'columnTypes' => [
         'bigIncrements' => '',
         'bigInteger' => '',
@@ -40,7 +42,6 @@ return [
             'dates' => false,
             'touches' => false,
             'casts' => false,
-            'rules' => 'required'
         ],
         'ipAddress' => '',
         'json' => '',

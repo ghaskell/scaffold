@@ -63,11 +63,14 @@ class ScaffoldGenerate extends Command
         $this->getMigrations();
 
         foreach ($this->migrations as $migration) {
-            Scaffold::create($migration)
+            $scaffold = Scaffold::create($migration)
                 ->buildModel()
                 ->buildRequest()
                 ->buildApiController()
                 ->addRoutes();
+            foreach($scaffold->messages as $message) {
+                $this->info($message);
+            }
         }
     }
 
