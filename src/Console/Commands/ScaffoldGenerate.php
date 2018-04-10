@@ -75,7 +75,6 @@ class ScaffoldGenerate extends Command
             }
         }
     }
-
     protected function getMigrations()
     {
         //Remove built in files
