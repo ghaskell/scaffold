@@ -224,7 +224,6 @@ class Scaffold
     public function build($stub)
     {
         $stub = $this->getStub($stub);
-        dd($stub);
         if($stub) {
             return $this->template
                 ->render(
@@ -263,8 +262,10 @@ class Scaffold
             $target = substr($method, 5);
             $content = $this->build($target);
             if($content) {
+                echo "1";
                 $this->files->put("$path.php", $content);
             } else {
+                echo "2";
                 $this->messages[] = "File stub $target not found.";
             }
             return $this;
