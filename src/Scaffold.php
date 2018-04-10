@@ -14,8 +14,9 @@ class Scaffold
     protected $columns;
     protected $variables;
     protected $migrationFileName;
-    protected $messages = [];
     protected $template;
+
+    public $messages = [];
 
 
 
