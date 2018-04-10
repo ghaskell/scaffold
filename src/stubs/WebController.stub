@@ -16,7 +16,7 @@ class <%modelName%>Controller extends Controller
     public function index()
     {
         <%modelVariable%>s = <%modelName%>::all();
-        return view('<%modelName%>.index', [
+        return view('<%modelNameLower%>.index', [
             '<%modelNameLower%>s' => <%modelVariable%>s
         ]);
     }
@@ -29,8 +29,8 @@ class <%modelName%>Controller extends Controller
      */
     public function show(<%modelName%> <%modelVariable%>)
     {
-        return view('<%modelName%>.index' [
-            '<%modelNameLower%>s' => <%modelVariable%>
+        return view('<%modelNameLower%>.show', [
+            '<%modelNameLower%>' => <%modelVariable%>
         ]);
     }
 

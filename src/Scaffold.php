@@ -146,7 +146,7 @@ class Scaffold
 
         $this->variables['modelVariable'] = "$" . Str::camel($this->model->name);
 
-        $this->variables['modelNameLower'] = "$" . Str::camel($this->model->name);
+        $this->variables['modelNameLower'] = Str::camel($this->model->name);
 
 
         if ($this->rules) {
@@ -308,9 +308,9 @@ class Scaffold
             '/([a-zA-Z])(?=[A-Z])/',
             '$1-', $this->model->name
         )));
-        $apiRouteString = "\n\nRoute::apiResource('$uri', 'api/{$this->model->name}Controller');";
+        $apiRouteString = "\n\nRoute::apiResource('$uri', 'Api\{$this->model->name}Controller');";
 
-        $webRouteString = "\n\nRoute::resource('$uri', 'web/{$this->model->name}Controller')->only(['index', 'show']);";
+        $webRouteString = "\n\nRoute::resource('$uri', 'Web\{$this->model->name}Controller')->only(['index', 'show']);";
 
         if (!str_contains($apiRoutes, $apiRouteString)) {
             $this->files->append(base_path("routes/api.php"), $apiRouteString);
