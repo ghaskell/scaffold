@@ -146,6 +146,8 @@ class Scaffold
 
         $this->variables['modelVariable'] = "$" . Str::camel($this->model->name);
 
+        $this->variables['modelNameLower'] = "$" . Str::camel($this->model->name);
+
 
         if ($this->rules) {
             $this->variables['rules'] = self::arrayStringify($this->rules);

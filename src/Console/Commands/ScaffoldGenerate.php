@@ -68,6 +68,7 @@ class ScaffoldGenerate extends Command
                 ->buildModel()
                 ->buildRequest()
                 ->buildApiController()
+                ->buildWebController()
                 ->addRoutes();
             foreach($scaffold->messages as $message) {
                 $this->line($message);

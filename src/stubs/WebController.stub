@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Controllers\Web;
+
+use App\<%modelName%>;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\<%modelName%>Request;
+
+class <%modelName%>Controller extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return mixed
+     */
+    public function index()
+    {
+        <%modelVariable%>s = <%modelName%>::all();
+        return view('<%modelName%>.index', [
+            '<%modelNameLower%>s' => <%modelVariable%>s
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\<%modelName%> <%modelVariable%>
+     * @return \Illuminate\Http\Response
+     */
+    public function show(<%modelName%> <%modelVariable%>)
+    {
+        return view('<%modelName%>.index' [
+            '<%modelNameLower%>s' => <%modelVariable%>
+        ]);
+    }
+
+}
