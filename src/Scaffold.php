@@ -250,10 +250,16 @@ class Scaffold
             } elseif (str_contains($method, "ApiController")) {
                 $path = app_path("Http/Controllers/Api/".$this->model->name."Controller");
                 if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File {$this->model->name}Controller.php already exists.";
+                    $this->messages[] = "File $path.php already exists.";
                     return $this;
                 }
                 $this->files->makeDirectory(app_path("Http/Controllers/Api"), 0755, false, true);
+            } elseif (str_contains($method, "WebController")) {
+                $path = app_path("Http/Controllers/Web/".$this->model->name."Controller");
+                if($this->files->exists("$path.php")) {
+                    $this->messages[] = "File $path.php already exists.";
+                    return $this;
+                }
                 $this->files->makeDirectory(app_path("Http/Controllers/Web"), 0755, false, true);
             } elseif (str_contains($method, "Request")) {
                 $path = app_path("Http/Requests/".$this->model->name."Request");
