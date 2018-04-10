@@ -224,10 +224,10 @@ class Scaffold
     public function build($stub)
     {
         $stub = $this->getStub($stub);
-        if($stub) {
+        if(!empty($stub)) {
             return $this->template
                 ->render(
-                    $this->getStub($stub),
+                    $stub,
                     $this->variables
                 );
         } else {
