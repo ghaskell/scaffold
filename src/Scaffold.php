@@ -298,6 +298,8 @@ class Scaffold
         if (!str_contains($webRoutes, $webRouteString)) {
             $this->files->append(base_path("routes/web.php"), $webRouteString);
         }
+
+        return $this;
     }
 
 
