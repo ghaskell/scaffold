@@ -222,11 +222,17 @@ class Scaffold
 
     public function build($stub)
     {
-        return $this->template
-            ->render(
-                $this->getStub($stub),
-                $this->variables
-            );
+        $stub = $this->getStub($stub);
+        if($stub) {
+            return $this->template
+                ->render(
+                    $this->getStub($stub),
+                    $this->variables
+                );
+        } else {
+            return false;
+        }
+
     }
 
     public function __call($method, $arguments)
@@ -254,16 +260,23 @@ class Scaffold
             }
             $target = substr($method, 5);
             $content = $this->build($target);
-            $this->files->put("$path.php", $content);
+            if($content) {
+                $this->files->put("$path.php", $content);
+            } else {
+                $this->messages[] = "File stub $target not found.";
+            }
+            return $this;
+
         }
-        return $this;
     }
 
     protected function getStub($stub)
     {
-
-
-        return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
+        if($this->files->exists(app_path("Scaffold/stubs/$stub.stub"))) {
+                return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
+        } else {
+            return false;
+        }
     }
 
     public function addRoutes()
