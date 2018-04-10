@@ -224,6 +224,7 @@ class Scaffold
     public function build($stub)
     {
         $stub = $this->getStub($stub);
+        dd($stub);
         if($stub) {
             return $this->template
                 ->render(
