@@ -21,7 +21,8 @@
   },
   "require-dev": {
     "orchestra/testbench": "~3.6.0",
-    "phpunit/phpunit": "~7.0"
+    "phpunit/phpunit": "~7.0",
+    "bobthecow/mustache-bundle": "^1.2"
   },
   "autoload": {
     "psr-4": {

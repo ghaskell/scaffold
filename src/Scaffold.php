@@ -16,6 +16,9 @@ class Scaffold
     protected $migrationFileName;
     protected $template;
 
+    public $messages = [];
+    public $created = [];
+
 
 
     public function __construct($migration)
@@ -142,7 +145,11 @@ class Scaffold
     {
         $this->variables['modelName'] = $this->model->name;
 
+        $this->variables['studlyName'] = Str::studly($this->model->name);
+
         $this->variables['modelVariable'] = "$" . Str::camel($this->model->name);
+
+        $this->variables['modelNameLower'] = Str::camel($this->model->name);
 
 
         if ($this->rules) {
@@ -185,24 +192,24 @@ class Scaffold
         $column->name = $name;
         $column->type = $type;
 
-        $columnConfig = config("crudmaster.columnTypes.$type");
+        $columnConfig = config("scaffold.columnTypes.$type");
 
-        if ($columnConfig['fillable']) {
+        if (!empty($columnConfig['fillable'])) {
             $this->model->fillable[] = $name;
         }
 
-        if ($columnConfig['dates']) {
+        if (!empty($columnConfig['dates'])) {
             $this->model->dates[] = $name;
         }
 
-        if ($columnConfig['touches']) {
+        if (!empty($columnConfig['touches'])) {
             $this->model->touches[] = $name;
         }
 
-        if ($columnConfig['casts']) {
+        if (!empty($columnConfig['casts'])) {
             $this->model->casts[$name] = $columnConfig['casts'];
         }
-        if ($columnConfig['rules']) {
+        if (!empty($columnConfig['rules'])) {
             $this->rules[$name] = $columnConfig['rules'];
         }
 
@@ -221,40 +228,57 @@ class Scaffold
 
     public function build($stub)
     {
-        return $this->template
-            ->render(
-                $this->getStub($stub),
-                $this->variables
-            );
+        $stub = $this->getStub($stub);
+        if(!empty($stub)) {
+            return $this->template
+                ->render(
+                    $stub,
+                    $this->variables
+                );
+        } else {
+            return false;
+        }
+
     }
 
     public function __call($method, $arguments)
     {
         if (starts_with($method, 'build')) {
-            if (str_contains($method, "Model")) {
-                $path = app_path($this->model->name);
-            } elseif (str_contains($method, "ApiController")) {
-                $this->files->makeDirectory(
-                    app_path("Http\Controllers\Api"), 0755, false, true
-                );
-                $this->files->makeDirectory(app_path("Http\Controllers\Web"), 0755, false, true);
-                $path = app_path("Http\Controllers\Api\\".$this->model->name."Controller");
-            } elseif (str_contains($method, "Request")) {
-                $path = app_path("Http\Requests\\".$this->model->name."Request");
-            } else {
-                $path = app_path();
+            $target = Str::camel(str_replace('build', '', $method));
+            $config = config("scaffold.files.$target");
+            $pathPrefix = $config['path'];
+            $fileName = $this->template->render($config['fileNamePattern'], $this->variables);
+            $path = app_path("$pathPrefix/$fileName");
+                if($this->files->exists("$path")) {
+                    $this->messages[] = "File '$path' exists and was not overwritten.";
+                    return $this;
+                }
+
+//            $this->files->makeDirectory(app_path("$pathPrefix"), 0755, false, true);
+            if(!$this->files->isDirectory(app_path($pathPrefix))) {
+                $this->files->makeDirectory(app_path("$pathPrefix"));
             }
 
-            $target = substr($method, 5);
             $content = $this->build($target);
-            $this->files->put("$path.php", $content);
+                if($content) {
+                    $this->files->put("$path", $content);
+                    $this->created[] = $path;
+                } else {
+                    $this->messages[] = "File stub $target not found.";
+                }
+
+                return $this;
         }
-        return $this;
     }
 
     protected function getStub($stub)
     {
-        return $this->files->get(app_path("CrudMaster/stubs/$stub.stub"));
+        $stub = Str::camel($stub);
+        if($this->files->exists(app_path("Scaffold/stubs/$stub.stub"))) {
+                return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
+        } else {
+            return false;
+        }
     }
 
     public function addRoutes()
@@ -265,17 +289,19 @@ class Scaffold
             '/([a-zA-Z])(?=[A-Z])/',
             '$1-', $this->model->name
         )));
-        $apiRouteString = "\n\nRoute::apiResource('$uri', 'api/{$this->model->name}Controller');";
+        $apiRouteString = "\n\nRoute::apiResource('$uri', 'Api\\{$this->model->name}Controller');";
 
-        $webRouteString = "\n\nRoute::resource('$uri', 'web/{$this->model->name}Controller')->only(['index', 'show']);";
+        $webRouteString = "\n\nRoute::resource('$uri', 'Web\\{$this->model->name}Controller')->only(['index', 'show']);";
 
         if (!str_contains($apiRoutes, $apiRouteString)) {
-            $this->files->append(base_path("routes/api.php"), $apiRouteString);
+            $this->files->append($apiRoutes, $apiRouteString);
         }
 
         if (!str_contains($webRoutes, $webRouteString)) {
-            $this->files->append(base_path("routes/web.php"), $webRouteString);
+            $this->files->append($webRoutes, $webRouteString);
         }
+
+        return $this;
     }
 
 

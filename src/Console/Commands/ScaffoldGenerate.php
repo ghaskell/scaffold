@@ -63,14 +63,25 @@ class ScaffoldGenerate extends Command
         $this->getMigrations();
 
         foreach ($this->migrations as $migration) {
-            Scaffold::create($migration)
+            $this->line("------------------------------------------------------------------------------------------------------------------");
+            $this->info("Generating for {$migration}");
+            $this->line("------------------------------------------------------------------------------------------------------------------");
+            $scaffold = Scaffold::create($migration)
                 ->buildModel()
                 ->buildRequest()
                 ->buildApiController()
+                ->buildWebController()
                 ->addRoutes();
+            foreach($scaffold->created as $created) {
+                $this->info("File '$created' generated.");
+            }
+            foreach($scaffold->messages as $message) {
+                $this->comment($message);
+            }
+            $this->line("------------------------------------------------------------------------------------------------------------------");
+
         }
     }
-
     protected function getMigrations()
     {
         //Remove built in files

@@ -20,10 +20,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         }
         $this->publishes([
-            __DIR__.'./stubs' => app_path('stubs')
-        ], 'stubs');
+            __DIR__.'/stubs' => app_path('Scaffold/stubs')
+        ], 'Scaffold Stubs');
     }
-
     public function register()
     {
         $this->mergeConfigFrom(
