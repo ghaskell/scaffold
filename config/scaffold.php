@@ -1,7 +1,24 @@
 <?php
 
 return [
-    'stubs' => [
+    'files' => [
+        'model' => [
+            'path' => 'Models',
+            'fileNamePattern' => '<%studlyName%>.php',
+        ],
+        'apiController' => [
+            'path' => 'Http/Controllers/Api',
+            'fileNamePattern' => '<%studlyName%>Controller.php',
+        ],
+        'webController' => [
+            'path' => 'Http/Controllers/Web',
+            'fileNamePattern' => '<%studlyName%>Controller.php',
+        ],
+        'request' => [
+            'path' => 'Http/Requests',
+            'fileNamePattern' => '<%studlyName%>Request.php',
+        ],
+
     ],
     'columnTypes' => [
         'bigIncrements' => '',

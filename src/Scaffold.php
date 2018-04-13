@@ -17,6 +17,7 @@ class Scaffold
     protected $template;
 
     public $messages = [];
+    public $created = [];
 
 
 
@@ -144,6 +145,8 @@ class Scaffold
     {
         $this->variables['modelName'] = $this->model->name;
 
+        $this->variables['studlyName'] = Str::studly($this->model->name);
+
         $this->variables['modelVariable'] = "$" . Str::camel($this->model->name);
 
         $this->variables['modelNameLower'] = Str::camel($this->model->name);
@@ -241,58 +244,36 @@ class Scaffold
     public function __call($method, $arguments)
     {
         if (starts_with($method, 'build')) {
-            if (str_contains($method, "Model")) {
-                $path = app_path($this->model->name);
-                if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File {$this->model->name}.php already exists.";
+            $target = Str::camel(str_replace('build', '', $method));
+            $config = config("scaffold.files.$target");
+            $pathPrefix = $config['path'];
+            $fileName = $this->template->render($config['fileNamePattern'], $this->variables);
+            $path = app_path("$pathPrefix/$fileName");
+                if($this->files->exists("$path")) {
+                    $this->messages[] = "File '$path' exists and was not overwritten.";
                     return $this;
                 }
-            } elseif (str_contains($method, "ApiController")) {
-                $path = app_path("Http/Controllers/Api/".$this->model->name."Controller");
-                if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File $path.php already exists.";
-                    return $this;
-                }
-                $this->files->makeDirectory(app_path("Http/Controllers/Api"), 0755, false, true);
-            } elseif (str_contains($method, "WebController")) {
-                $path = app_path("Http/Controllers/Web/".$this->model->name."Controller");
-                if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File $path.php already exists.";
-                    return $this;
-                }
-                $this->files->makeDirectory(app_path("Http/Controllers/Web"), 0755, false, true);
-            } elseif (str_contains($method, "Request")) {
-                $path = app_path("Http/Requests/".$this->model->name."Request");
-                if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File {$this->model->name}Request.php already exists.";
-                    return $this;
-                }
-            } else {
-                $path = app_path();
-                if($this->files->exists("$path.php")) {
-                    $this->messages[] = "File {$this->model->name}.php already exists.";
-                    return $this;
-                }
+
+//            $this->files->makeDirectory(app_path("$pathPrefix"), 0755, false, true);
+            if(!$this->files->isDirectory(app_path($pathPrefix))) {
+                $this->files->makeDirectory(app_path("$pathPrefix"));
             }
 
-            if($this->files->exists("$path.php")) {
-                $this->messages[] = "File {$this->model->name}Controller already exists.";
-                return $this;
-            }
-            $target = substr($method, 5);
             $content = $this->build($target);
-            if($content) {
-                $this->files->put("$path.php", $content);
-            } else {
-                $this->messages[] = "File stub $target not found.";
-            }
-            return $this;
+                if($content) {
+                    $this->files->put("$path", $content);
+                    $this->created[] = $path;
+                } else {
+                    $this->messages[] = "File stub $target not found.";
+                }
 
+                return $this;
         }
     }
 
     protected function getStub($stub)
     {
+        $stub = Str::camel($stub);
         if($this->files->exists(app_path("Scaffold/stubs/$stub.stub"))) {
                 return $this->files->get(app_path("Scaffold/stubs/$stub.stub"));
         } else {
@@ -308,16 +289,16 @@ class Scaffold
             '/([a-zA-Z])(?=[A-Z])/',
             '$1-', $this->model->name
         )));
-        $apiRouteString = "\n\nRoute::apiResource('$uri', 'Api\{$this->model->name}Controller');";
+        $apiRouteString = "\n\nRoute::apiResource('$uri', 'Api\\{$this->model->name}Controller');";
 
-        $webRouteString = "\n\nRoute::resource('$uri', 'Web\{$this->model->name}Controller')->only(['index', 'show']);";
+        $webRouteString = "\n\nRoute::resource('$uri', 'Web\\{$this->model->name}Controller')->only(['index', 'show']);";
 
         if (!str_contains($apiRoutes, $apiRouteString)) {
-            $this->files->append(base_path("routes/api.php"), $apiRouteString);
+            $this->files->append($apiRoutes, $apiRouteString);
         }
 
         if (!str_contains($webRoutes, $webRouteString)) {
-            $this->files->append(base_path("routes/web.php"), $webRouteString);
+            $this->files->append($webRoutes, $webRouteString);
         }
 
         return $this;
