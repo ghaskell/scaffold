@@ -2,8 +2,10 @@
 
 namespace Ghaskell\Scaffold;
 
+use Ghaskell\Scaffold\Facades\Vibro;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 
 class Scaffold
@@ -15,6 +17,7 @@ class Scaffold
     protected $variables;
     protected $migrationFileName;
     protected $template;
+    protected $blade;
 
     public $messages = [];
     public $created = [];
@@ -25,21 +28,13 @@ class Scaffold
     {
         $this->model = new \stdClass();
         $this->migration = $migration;
+        $this->files = new Filesystem();
         $this->requireFiles();
         $migrationInstance = $this->resolve(
             $name = $this->getMigrationName($this->migration)
         );
         $this->migration = $migrationInstance;
 
-
-        $this->template = new \Mustache_Engine([
-            'delimiters' => '<% %>',
-            'escape' => function ($value) {
-                return $value; //no escaping.
-            }
-        ]);
-
-        $this->files = new Filesystem();
         $reflector = new \ReflectionClass($migrationInstance);
         $this->migrationFileName = $reflector->getFileName();
 
@@ -146,10 +141,13 @@ class Scaffold
         $this->variables['modelName'] = $this->model->name;
 
         $this->variables['studlyName'] = Str::studly($this->model->name);
+        $this->variables['studlyNamePlural'] = Str::plural(Str::studly($this->model->name));
 
         $this->variables['modelVariable'] = "$" . Str::camel($this->model->name);
+        $this->variables['modelVariablePlural'] = "$" . Str::plural(Str::camel($this->model->name));
 
         $this->variables['modelNameLower'] = Str::camel($this->model->name);
+        $this->variables['modelNameLowerPlural'] = Str::plural(Str::camel($this->model->name));
 
 
         if ($this->rules) {
@@ -228,17 +226,8 @@ class Scaffold
 
     public function build($stub)
     {
-        $stub = $this->getStub($stub);
-        if(!empty($stub)) {
-            return $this->template
-                ->render(
-                    $stub,
-                    $this->variables
-                );
-        } else {
-            return false;
-        }
-
+        $path = $this->getStubPath($stub);
+        return Vibro::compileFile($path, $this->variables );
     }
 
     public function __call($method, $arguments)
@@ -247,14 +236,14 @@ class Scaffold
             $target = Str::camel(str_replace('build', '', $method));
             $config = config("scaffold.files.$target");
             $pathPrefix = $config['path'];
-            $fileName = $this->template->render($config['fileNamePattern'], $this->variables);
+            $fileName = Vibro::compileFileName($config['fileNamePattern'], $this->variables);
+
             $path = app_path("$pathPrefix/$fileName");
                 if($this->files->exists("$path")) {
                     $this->messages[] = "File '$path' exists and was not overwritten.";
                     return $this;
                 }
 
-//            $this->files->makeDirectory(app_path("$pathPrefix"), 0755, false, true);
             if(!$this->files->isDirectory(app_path($pathPrefix))) {
                 $this->files->makeDirectory(app_path("$pathPrefix"));
             }
@@ -281,26 +270,32 @@ class Scaffold
         }
     }
 
+    protected function getStubPath($stub)
+    {
+        $stub = Str::camel($stub);
+        return app_path("Scaffold/stubs/$stub.stub");
+    }
+
     public function addRoutes()
     {
-        $apiRoutes = $this->files->get(base_path("routes/api.php"));
-        $webRoutes = $this->files->get(base_path("routes/web.php"));
-        $uri = Str::plural(strtolower(preg_replace(
-            '/([a-zA-Z])(?=[A-Z])/',
-            '$1-', $this->model->name
-        )));
-        $apiRouteString = "\n\nRoute::apiResource('$uri', 'Api\\{$this->model->name}Controller');";
+        foreach(config('scaffold.routes') as $key => $route)
+        {
+            $namespace = Str::studly($key);
+            $routeContent = $this->files->get($route['fileName']);
+            $uri = Str::plural(strtolower(preg_replace(
+                '/([a-zA-Z])(?=[A-Z])/',
+                '$1-', $this->model->name
+            )));
+            if($key = 'web') {
+                $routeString = "\n\nRoute::resource('$uri', '$namespace\\{$this->model->name}Controller')->only(['index', 'show']);";
+            } else {
+                $routeString = "\n\nRoute::apiResource('$uri', '$namespace\\{$this->model->name}Controller');";
+            }
 
-        $webRouteString = "\n\nRoute::resource('$uri', 'Web\\{$this->model->name}Controller')->only(['index', 'show']);";
-
-        if (!str_contains($apiRoutes, $apiRouteString)) {
-            $this->files->append($apiRoutes, $apiRouteString);
+            if (!str_contains($routeContent, $routeString)) {
+                $this->files->append($route['fileName'], $routeString);
+            }
         }
-
-        if (!str_contains($webRoutes, $webRouteString)) {
-            $this->files->append($webRoutes, $webRouteString);
-        }
-
         return $this;
     }
 

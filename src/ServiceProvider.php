@@ -3,6 +3,9 @@
 namespace Ghaskell\Scaffold;
 
 use Ghaskell\Scaffold\Console\Commands\ScaffoldGenerate;
+use Ghaskell\Scaffold\Facades\Vibro;
+use Illuminate\Support\Facades\View;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -10,6 +13,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
+        Code::addExtension('stub',  'vibro');
         $this->publishes([
             self::CONFIG_PATH => config_path('scaffold.php'),
         ], 'config');

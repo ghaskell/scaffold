@@ -1,0 +1,87 @@
+<template>
+    <div class="bg-white container">
+        <table class="table table-bordered table__admin">
+            <thead>
+            <tr>
+                <th colspan = 999>
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                <template v-for="asset in assets">
+                    <asset-list-item :data="asset"></asset-list-item>
+                </template>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="100">
+                    <div class="table__controls table__footer-utilities">
+                        <!--<a href="#">-->
+                            <!--<i class="fas fa-trash-alt"></i>-->
+                        <!--</a>-->
+
+                        <!--<a href="#">-->
+                            <!--<i class="fas fa-upload"></i>-->
+                        <!--</a>-->
+
+                        <!--<a href="#">-->
+                            <!--<i class="fas fa-download"></i>-->
+                        <!--</a>-->
+                    </div>
+                    <div class="table__controls table__footer-add">
+                        <a href="#" @click.stop.prevent="openNewModal">
+                            <i class="fas fa-plus"></i>
+                        </a>
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+    </div>
+</template>
+
+<script>
+    import AssetListItem from './asset-list-item';
+    import { mapActions } from 'vuex';
+
+    export default {
+        name: 'AssetList',
+        props: {
+            module: {
+                required: true,
+            }
+        },
+        mixins: [],
+        components: {AssetListItem},
+        data() {
+            return {}
+
+        },
+        mounted() {
+
+        },
+        computed: {
+            assets: {
+                get () {
+                    return this.$store.state[this.module].active.assets
+                },
+                set (value) {
+                    this.setList(value);
+                }
+            }
+        },
+        watch: {},
+        methods: {
+            ...mapActions({
+            }),
+            openNewModal: function() {
+                this.$store.dispatch('page/loadModalComponent', {
+                    title: "Create New Asset",
+                    component: 'asset-form',
+                    module: this.module,
+                }, { root: true });
+                this.$store.dispatch('page/openModal', {}, { root: true });
+            },
+        }
+    }
+</script>
