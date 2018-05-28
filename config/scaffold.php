@@ -1,24 +1,31 @@
 <?php
 
 return [
+    'routes' => [
+        'api' => [
+            'fileName' => 'routes/api.php',
+        ],
+        'web' => [
+            'fileName' => 'routes/web.php',
+        ],
+    ],
     'files' => [
         'model' => [
             'path' => 'Models',
-            'fileNamePattern' => '<%studlyName%>.php',
+            'fileNamePattern' => '<%$studlyName%>.php',
         ],
         'apiController' => [
             'path' => 'Http/Controllers/Api',
-            'fileNamePattern' => '<%studlyName%>Controller.php',
+            'fileNamePattern' => '<%$studlyName%>Controller.php',
         ],
         'webController' => [
             'path' => 'Http/Controllers/Web',
-            'fileNamePattern' => '<%studlyName%>Controller.php',
+            'fileNamePattern' => '<%$studlyName%>Controller.php',
         ],
         'request' => [
             'path' => 'Http/Requests',
-            'fileNamePattern' => '<%studlyName%>Request.php',
+            'fileNamePattern' => '<%$studlyName%>Request.php',
         ],
-
     ],
     'columnTypes' => [
         'bigIncrements' => '',
