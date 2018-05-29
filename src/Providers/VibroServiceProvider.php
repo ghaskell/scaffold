@@ -6,11 +6,10 @@
  * Time: 1:09 PM
  */
 
-namespace Ghaskell\Scaffold;
+namespace Ghaskell\Scaffold\Providers;
 
 use Ghaskell\Scaffold\VibroCompiler;
 use Illuminate\Support\Facades\App;
-use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\ViewServiceProvider;
 
 class VibroServiceProvider extends ViewServiceProvider
@@ -39,7 +38,7 @@ class VibroServiceProvider extends ViewServiceProvider
             );
         });
     }
-//
+
 //    public function registerVibroEngine($resolver)
 //    {
 //        $this->app->singleton('blade.compiler', function () {

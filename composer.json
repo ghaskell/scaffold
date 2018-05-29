@@ -43,9 +43,9 @@
   "extra": {
     "laravel": {
       "providers": [
-        "Ghaskell\\Scaffold\\ServiceProvider",
-        "Ghaskell\\Scaffold\\CodeServiceProvider",
-        "Ghaskell\\Scaffold\\VibroServiceProvider"
+        "Ghaskell\\Scaffold\\Providers\\ServiceProvider",
+        "Ghaskell\\Scaffold\\Providers\\CodeServiceProvider",
+        "Ghaskell\\Scaffold\\Providers\\VibroServiceProvider"
       ]
     }
   },

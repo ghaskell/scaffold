@@ -12,19 +12,19 @@ return [
     'files' => [
         'model' => [
             'path' => 'Models',
-            'fileNamePattern' => '<%$studlyName%>.php',
+            'fileNamePattern' => '<%$model->name%>.php',
         ],
         'apiController' => [
             'path' => 'Http/Controllers/Api',
-            'fileNamePattern' => '<%$studlyName%>Controller.php',
+            'fileNamePattern' => '<%$model->name%>Controller.php',
         ],
         'webController' => [
             'path' => 'Http/Controllers/Web',
-            'fileNamePattern' => '<%$studlyName%>Controller.php',
+            'fileNamePattern' => '<%$model->name%>Controller.php',
         ],
         'request' => [
             'path' => 'Http/Requests',
-            'fileNamePattern' => '<%$studlyName%>Request.php',
+            'fileNamePattern' => '<%$model->name%>Request.php',
         ],
     ],
     'columnTypes' => [
