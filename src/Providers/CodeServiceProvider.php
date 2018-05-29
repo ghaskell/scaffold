@@ -6,10 +6,9 @@
  * Time: 1:09 PM
  */
 
-namespace Ghaskell\Scaffold;
+namespace Ghaskell\Scaffold\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\FileViewFinder;
 
@@ -106,7 +105,7 @@ class CodeServiceProvider extends ServiceProvider
         });
 
         $resolver->register('vibro', function () {
-            return new CompilerEngine($this->app['vibro.compiler']);
+            return new CodeCompilerEngine($this->app['vibro.compiler']);
         });
     }
 }

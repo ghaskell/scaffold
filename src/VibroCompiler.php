@@ -8,9 +8,6 @@
 
 namespace Ghaskell\Scaffold;
 
-
-use Ghaskell\Scaffold\Facades\Vibro;
-use Illuminate\Support\Facades\View;
 use Illuminate\View\Compilers\BladeCompiler;
 
 
@@ -22,7 +19,7 @@ class VibroCompiler extends BladeCompiler
      *
      * @var array
      */
-    protected $rawTags = ['<%%', '%%>'];
+    protected $rawTags = ['<%', '%>'];
 
 
     /**
@@ -30,7 +27,7 @@ class VibroCompiler extends BladeCompiler
      *
      * @var array
      */
-    protected $contentTags = ['<%', '%>'];
+//    protected $contentTags = ['<%', '%>'];
 
     /**
      * Array of opening and closing tags for escaped echos.
@@ -62,8 +59,7 @@ class VibroCompiler extends BladeCompiler
 
 
 
-    public function compileFileName($fileName, $args) {
-        extract($args);
+    public function compileFileName($fileName, $model) {
         $parsed = $this->compileString($fileName);
         ob_start();
         eval( '?>' . $parsed );
@@ -72,8 +68,8 @@ class VibroCompiler extends BladeCompiler
         return $output;
     }
 
-    public function compileFile($filePath, $args)
+    public function compileFile($filePath, $model)
     {
-        return Code::file($filePath, $args)->with($args)->render();
+        return Code::file($filePath)->with(['model'=>$model])->render();
     }
 }

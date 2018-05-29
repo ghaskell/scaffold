@@ -3,41 +3,44 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+@if($model->softDeletes)
+    use Illuminate\Database\Eloquent\SoftDeletes;
+@endif
 
-class <%modelName%> extends Model
+
+class <%$model->name%> extends Model
 {
-    ##softDeletes##
+    @if($model->softDeletes)
+        use SoftDeletes;
+    @endif
+
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ##fillable##;
+    protected $fillable = <%$model->fillable%>;
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ##dates##;
+    protected $dates = <%$model->dates%>;
 
     /**
      * All of the relationships to be touched.
      *
      * @var array
      */
-    protected $touches = ##touches##;
+    protected $touches = <%$model->touches%>;
 
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = ##casts##;
+    protected $casts = <%$model->casts%>;
 
-    // Relationships
-
-    ##relationships##
 }

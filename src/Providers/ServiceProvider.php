@@ -1,6 +1,6 @@
 <?php
 
-namespace Ghaskell\Scaffold;
+namespace Ghaskell\Scaffold\Providers;
 
 use Ghaskell\Scaffold\Console\Commands\ScaffoldGenerate;
 use Ghaskell\Scaffold\Facades\Vibro;
@@ -24,7 +24,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         }
         $this->publishes([
-            __DIR__.'/stubs' => app_path('Scaffold/stubs')
+            __DIR__ . '/stubs' => app_path('Scaffold/stubs')
         ], 'Scaffold Stubs');
     }
     public function register()
