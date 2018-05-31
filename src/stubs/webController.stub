@@ -1,37 +1,37 @@
-<?php
+<?stub
 
 namespace App\Http\Controllers\Web;
 
-use App\<%modelName%>;
+use *|$model->fqname|*;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\<%modelName%>Request;
+use App\Http\Requests\*|$model->name|*Request;
 
-class <%modelName%>Controller extends Controller
+class *|$model->name|*Controller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return mixed
-     */
-    public function index()
-    {
-        <%modelVariable%>s = <%modelName%>::all();
-        return view('<%modelNameLower%>.index', [
-            '<%modelNameLower%>s' => <%modelVariable%>s
-        ]);
-    }
+/**
+* Display a listing of the resource.
+*
+* @return mixed
+*/
+public function index()
+{
+$*|strtolower($model->name)|*s = *|$model->name|*::all();
+return view('*|strtolower($model->name)|*.index', [
+'*|strtolower($model->name)|*s' => $*|strtolower($model->name)|*s
+]);
+}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\<%modelName%> <%modelVariable%>
-     * @return \Illuminate\Http\Response
-     */
-    public function show(<%modelName%> <%modelVariable%>)
-    {
-        return view('<%modelNameLower%>.show', [
-            '<%modelNameLower%>' => <%modelVariable%>
-        ]);
-    }
+/**
+* Display the specified resource.
+*
+* @param  \App\*|$model->name|* $*|strtolower($model->name)|*
+* @return \Illuminate\Http\Response
+*/
+public function show(*|$model->name|* $*|strtolower($model->name)|*)
+{
+return view('*|strtolower($model->name)|*.show', [
+'*|strtolower($model->name)|*' => $*|strtolower($model->name)|*
+]);
+}
 
 }

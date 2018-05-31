@@ -12,21 +12,33 @@ return [
     'files' => [
         'model' => [
             'path' => 'Models',
-            'fileNamePattern' => '<%$model->name%>.php',
+            'fileNamePattern' => '*|$model->name|*.php',
         ],
         'apiController' => [
-            'path' => 'Http/Controllers/Api',
-            'fileNamePattern' => '<%$model->name%>Controller.php',
+            'path' => 'app/Http/Controllers/Api',
+            'fileNamePattern' => '*|$model->name|*Controller.php',
         ],
         'webController' => [
-            'path' => 'Http/Controllers/Web',
-            'fileNamePattern' => '<%$model->name%>Controller.php',
+            'path' => 'app/Http/Controllers/Web',
+            'fileNamePattern' => '*|$model->name|*Controller.php',
         ],
         'request' => [
-            'path' => 'Http/Requests',
-            'fileNamePattern' => '<%$model->name%>Request.php',
+            'path' => 'app/Http/Requests',
+            'fileNamePattern' => '*|$model->name|*Request.php',
+        ],
+        'show' => [
+            'path' => 'resources/views/*|strtolower($model->name)|*',
+            'fileNamePattern' => 'show.blade.php',
+        ],
+        'index' => [
+            'path' => 'resources/views/*|strtolower($model->name)|*',
+            'fileNamePattern' => 'index.blade.php',
         ],
     ],
+    'variables' => [
+        'lower' => 'strtolower($model->name)',
+    ],
+
     'columnTypes' => [
         'bigIncrements' => '',
         'bigInteger' => '',

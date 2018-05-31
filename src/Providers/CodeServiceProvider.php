@@ -8,12 +8,17 @@
 
 namespace Ghaskell\Scaffold\Providers;
 
+use Ghaskell\Scaffold\CodeCompilerEngine;
+use Ghaskell\Scaffold\VibroCompiler;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\View\Engines\EngineResolver;
+use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
 
 class CodeServiceProvider extends ServiceProvider
 {
+    const CONFIG_PATH = __DIR__ . './../../config/scaffold.php';
+
     /**
      * Register the service provider.
      *
@@ -57,6 +62,19 @@ class CodeServiceProvider extends ServiceProvider
     }
 
     /**
+     * Create a new Factory Instance.
+     *
+     * @param  \Illuminate\View\Engines\EngineResolver  $resolver
+     * @param  \Illuminate\View\ViewFinderInterface  $finder
+     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
+     * @return \Illuminate\View\Factory
+     */
+    protected function createFactory($resolver, $finder, $events)
+    {
+        return new Factory($resolver, $finder, $events);
+    }
+
+    /**
      * Register the view finder implementation.
      *
      * @return void
@@ -75,7 +93,7 @@ class CodeServiceProvider extends ServiceProvider
      */
     public function registerEngineResolver()
     {
-        $this->app->singleton('view.engine.resolver', function () {
+        $this->app->singleton('code.engine.resolver', function () {
             $resolver = new EngineResolver;
 
             // Next, we will register the various view engines with the resolver so that the

@@ -1,5 +1,8 @@
 <template>
     <div class="bg-white container">
+    <h1>
+        <%$model->name%>
+    </h1>
         <table class="table table-bordered table__admin">
             <thead>
             <tr>
@@ -8,8 +11,8 @@
             </tr>
             </thead>
             <tbody>
-                <template v-for="asset in assets">
-                    <asset-list-item :data="asset"></asset-list-item>
+                <template v-for="<%strtolower($model->name)$> in <%strtolower(str_plural(($model->name)$>">
+                    <<%strtolower($model->name)$>-list-item :data="asset"></<%strtolower($model->name)$>-list-item>
                 </template>
             </tbody>
             <tfoot>
@@ -41,18 +44,18 @@
 </template>
 
 <script>
-    import AssetListItem from './asset-list-item';
+    import <%$model->name%>ListItem from './<%strtolower($model->name)$>-list-item';
     import { mapActions } from 'vuex';
 
     export default {
-        name: 'AssetList',
+        name: '<%$model->name%>List',
         props: {
             module: {
                 required: true,
             }
         },
         mixins: [],
-        components: {AssetListItem},
+        components: {<%$model->name%>ListItem},
         data() {
             return {}
 
@@ -61,9 +64,9 @@
 
         },
         computed: {
-            assets: {
+        <%strtolower($model->name)%>: {
                 get () {
-                    return this.$store.state[this.module].active.assets
+                    return this.$store.state[this.module].active.<%strtolower(str_plural($model->name))%>
                 },
                 set (value) {
                     this.setList(value);
@@ -72,16 +75,7 @@
         },
         watch: {},
         methods: {
-            ...mapActions({
-            }),
-            openNewModal: function() {
-                this.$store.dispatch('page/loadModalComponent', {
-                    title: "Create New Asset",
-                    component: 'asset-form',
-                    module: this.module,
-                }, { root: true });
-                this.$store.dispatch('page/openModal', {}, { root: true });
-            },
+
         }
     }
 </script>

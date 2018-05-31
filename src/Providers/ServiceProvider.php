@@ -3,13 +3,11 @@
 namespace Ghaskell\Scaffold\Providers;
 
 use Ghaskell\Scaffold\Console\Commands\ScaffoldGenerate;
-use Ghaskell\Scaffold\Facades\Vibro;
-use Illuminate\Support\Facades\View;
-use Illuminate\View\Compilers\BladeCompiler;
+use Ghaskell\Scaffold\Facades\Code;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    const CONFIG_PATH = __DIR__ . '/../config/scaffold.php';
+    const CONFIG_PATH = __DIR__ . './../../config/scaffold.php';
 
     public function boot()
     {
@@ -24,7 +22,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         }
         $this->publishes([
-            __DIR__ . '/stubs' => app_path('Scaffold/stubs')
+            __DIR__ . './../stubs' => app_path('Scaffold/stubs')
         ], 'Scaffold Stubs');
     }
     public function register()

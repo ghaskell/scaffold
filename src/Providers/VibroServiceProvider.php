@@ -14,7 +14,7 @@ use Illuminate\View\ViewServiceProvider;
 
 class VibroServiceProvider extends ViewServiceProvider
 {
-    const CONFIG_PATH = __DIR__ . '/../config/scaffold.php';
+    const CONFIG_PATH = __DIR__ . './../../config/scaffold.php';
 
     public function boot()
     {

@@ -1,46 +1,54 @@
-<?php
+<?stub
 
-namespace App;
+namespace *|$model->namespace|*;
 
 use Illuminate\Database\Eloquent\Model;
-@if($model->softDeletes)
-    use Illuminate\Database\Eloquent\SoftDeletes;
-@endif
+*|$model->softDeletes|*
+
+@%if ($model->softDeletes)
+use Illuminate\Database\Eloquent\SoftDeletes;
+@%endif
 
 
-class <%$model->name%> extends Model
+class *|$model->name |* extends Model
 {
-    @if($model->softDeletes)
-        use SoftDeletes;
-    @endif
+    @%if ($model->softDeletes)
+    use SoftDeletes;
+    @%endif
 
-
+    @%if ($model->fillable)
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = <%$model->fillable%>;
+     protected $fillable = *|$model->fillable |*;
+     @%endif
 
+    @%if ($model->dates)
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = <%$model->dates%>;
+    protected $dates = *|$model->dates |*;
+    @%endif
 
+    @%if ($model->touches)
     /**
      * All of the relationships to be touched.
      *
      * @var array
      */
-    protected $touches = <%$model->touches%>;
+    protected $touches = *|$model->touches |*;
+    @%endif
 
+    @%if ($model->casts)
     /**
      * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = <%$model->casts%>;
-
+    protected $casts = *|$model->casts |*;
+    @%endif
 }

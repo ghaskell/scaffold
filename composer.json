@@ -44,8 +44,8 @@
     "laravel": {
       "providers": [
         "Ghaskell\\Scaffold\\Providers\\ServiceProvider",
-        "Ghaskell\\Scaffold\\Providers\\CodeServiceProvider",
-        "Ghaskell\\Scaffold\\Providers\\VibroServiceProvider"
+        "Ghaskell\\Scaffold\\Providers\\VibroServiceProvider",
+        "Ghaskell\\Scaffold\\Providers\\CodeServiceProvider"
       ]
     }
   },
