@@ -1,69 +1,69 @@
-<?php
+<?stub
 
 namespace App\Http\Controllers\Api;
 
-use App\<%modelName%>;
+use *|$model->fqname|*;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\<%modelName%>Request;
+use App\Http\Requests\*|$model->name|*Request;
 
-class <%modelName%>Controller extends Controller
+class *|$model->name|*Controller extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return mixed
-     */
-    public function index()
-    {
-        return <%modelName%>::all();
-    }
+/**
+* Display a listing of the resource.
+*
+* @return mixed
+*/
+public function index()
+{
+return *|$model->name|*::all();
+}
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\<%modelName%>Request $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(<%modelName%>Request $request)
-    {
-        return <%modelName%>::create($request->all());
-    }
+/**
+* Store a newly created resource in storage.
+*
+* @param  \App\Http\Requests\*|$model->name|*Request $request
+* @return \Illuminate\Http\Response
+*/
+public function store(*|$model->name|*Request $request)
+{
+return *|$model->name|*::create($request->all());
+}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\<%modelName%> <%modelVariable%>
-     * @return \Illuminate\Http\Response
-     */
-    public function show(<%modelName%> <%modelVariable%>)
-    {
-        return response(<%modelVariable%>);
-    }
+/**
+* Display the specified resource.
+*
+* @param  \App\*|$model->name|* $*|strtolower($model->name)|*
+* @return \Illuminate\Http\Response
+*/
+public function show(*|$model->name|* $*|strtolower($model->name)|*)
+{
+return response($*|strtolower($model->name)|*);
+}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\<%modelName%>Request $request
-     * @param  \App\<%modelName%> <%modelVariable%>
-     * @return \Illuminate\Http\Response
-     */
-    public function update(<%modelName%>Request $request, <%modelName%> <%modelVariable%>)
-    {
-        <%modelVariable%>->fill($request->all());
-        <%modelVariable%>->save();
+/**
+* Update the specified resource in storage.
+*
+* @param  \App\Http\Requests\*|$model->name|*Request $request
+* @param  \App\*|$model->name|* $*|strtolower($model->name)|*
+* @return \Illuminate\Http\Response
+*/
+public function update(*|$model->name|*Request $request, *|$model->name|* $*|strtolower($model->name)|*)
+{
+$*|strtolower($model->name)|*->fill($request->all());
+$*|strtolower($model->name)|*->save();
 
-        return response(<%modelVariable%>->fresh());
-    }
+return response($*|strtolower($model->name)|*->fresh());
+}
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\<%modelName%> <%modelVariable%>
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(<%modelName%> <%modelVariable%>)
-    {
-        return response(<%modelVariable%>->delete());
-    }
+/**
+* Remove the specified resource from storage.
+*
+* @param  \App\*|$model->name|* $*|strtolower($model->name)|*
+* @return \Illuminate\Http\Response
+*/
+public function destroy(*|$model->name|* $*|strtolower($model->name)|*)
+{
+return response($*|strtolower($model->name)|*->delete());
+}
 }

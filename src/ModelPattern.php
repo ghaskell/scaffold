@@ -14,15 +14,16 @@ use Illuminate\Database\Migrations\Migration;
 use Ghaskell\Scaffold\ColumnPattern as Column;
 use Illuminate\Support\Str;
 use Illuminate\Filesystem\Filesystem;
+use phpDocumentor\Reflection\Types\Array_;
 
 class ModelPattern
 {
     public $name;
-    public $rules;
-    public $fillable;
-    public $dates;
-    public $touches;
-    public $casts;
+    protected $rules;
+    protected $fillable = [];
+    protected $dates = [];
+    protected $touches = [];
+    protected $casts = [];
     protected $softDeletes;
     protected $migration;
     public $columns;
@@ -36,9 +37,13 @@ class ModelPattern
     public static function make(string $migration) {
         $model = new ModelPattern();
         $model->migration = $migration;
+
         $model->parseModelName()
             ->parseColumns()
             ->processColumns();
+        
+        $model->namespace = "App\\" . config('scaffold.files.model.path');
+        $model->fqname = $model->namespace . "\\" . $model->name;
         return $model;
     }
 
@@ -96,5 +101,25 @@ class ModelPattern
         if (!empty($column->config['rules'])) {
             $this->rules[$column->name] = $column->config['rules'];
         }
+    }
+
+    public function __get($key) {
+        return self::arrayStringify($this->{$key});
+    }
+
+
+    public static function arrayStringify($array)
+    {
+        if(count($array) > 0) {
+            $export = str_replace(['array (', ')', '&#40', '&#41'], ['[', ']', '(', ')'], var_export($array, true));
+            $export = preg_replace("/ => \n[^\S\n]*\[/m", ' => [', $export);
+            $export = preg_replace("/ => \[\n[^\S\n]*\]/m", ' => []', $export);
+            $export = preg_replace('/[\r\n]+/', "\n", $export);
+            $export = preg_replace('/[ \t]+/', ' ', $export);
+            $export = preg_replace('/\d\s=>\s/', '', $export);
+            $export = preg_replace('/\r\n|\r|\n/', '', $export);
+            return $export; //don't fear the trailing comma
+        }
+        return null;
     }
 }

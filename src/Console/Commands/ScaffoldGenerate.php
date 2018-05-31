@@ -66,12 +66,13 @@ class ScaffoldGenerate extends Command
             $this->line("------------------------------------------------------------------------------------------------------------------");
             $this->info("Generating for {$migration}");
             $this->line("------------------------------------------------------------------------------------------------------------------");
-            $scaffold = Scaffold::make($migration)
-                ->buildModel();
-//                ->buildRequest()
-//                ->buildApiController()
-//                ->buildWebController()
-//                ->addRoutes();
+            $files = config('scaffold.files');
+            $scaffold = Scaffold::make($migration);
+            foreach($files as $key => $file) {
+                $scaffold->generate($key);
+            }
+            $scaffold->addRoutes();
+
             foreach($scaffold->created as $created) {
                 $this->info("File '$created' generated.");
             }

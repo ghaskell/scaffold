@@ -1,0 +1,5 @@
+@extends('layouts.app')
+
+@section('content')
+    *|$model->name|* show
+@endsection

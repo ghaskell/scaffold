@@ -82,20 +82,12 @@ class Scaffold
         })->all();
     }
 
-    public static function arrayStringify(array $array)
-    {
-        $export = str_replace(['array (', ')', '&#40', '&#41'], ['[', ']', '(', ')'], var_export($array, true));
-        $export = preg_replace("/ => \n[^\S\n]*\[/m", ' => [', $export);
-        $export = preg_replace("/ => \[\n[^\S\n]*\]/m", ' => []', $export);
-        $export = preg_replace('/[\r\n]+/', "\n", $export);
-        $export = preg_replace('/[ \t]+/', ' ', $export);
-        return $export; //don't fear the trailing comma
-    }
 
-    public function build($stub)
+
+    public function build($stub, $data)
     {
         $path = $this->getStubPath($stub);
-        return Vibro::compileFile($path, $this->model );
+        return Vibro::compileFile($path, $data);
     }
 
     protected function getStub($stub)
@@ -124,7 +116,9 @@ class Scaffold
                 '/([a-zA-Z])(?=[A-Z])/',
                 '$1-', $this->model->name
             )));
-            if($key = 'web') {
+
+
+            if($key === 'web') {
                 $routeString = "\n\nRoute::resource('$uri', '$namespace\\{$this->model->name}Controller')->only(['index', 'show']);";
             } else {
                 $routeString = "\n\nRoute::apiResource('$uri', '$namespace\\{$this->model->name}Controller');";
@@ -137,36 +131,51 @@ class Scaffold
         return $this;
     }
 
-    public function __call($method, $arguments)
+    public function generate($file)
     {
-        if (starts_with($method, 'build')) {
-            $target = Str::camel(str_replace('build', '', $method));
+            $target = Str::camel(str_replace('build', '', $file));
             $config = config("scaffold.files.$target");
             $pathPrefix = $config['path'];
-            $fileName = Vibro::compileFileName($config['fileNamePattern'], $this->model);
+            $variables = ['model' => $this->model];
 
-            $path = app_path("$pathPrefix/$fileName");
-            if($this->files->exists("$path")) {
-                $this->messages[] = "File '$path' exists and was not overwritten.";
+            if(!empty(config("scaffold.variables"))) {
+                foreach (config("scaffold.variables") as $variable => $value) {
+                    $variables[$variable] = $this->compileVariable($value);
+                }
+            }
+
+            $fileName = Vibro::compileFileName($config['fileNamePattern'], $variables);
+            $pathPrefix = base_path(Vibro::compileFileName("$pathPrefix", $variables));
+            if($this->files->exists("$pathPrefix/$fileName")) {
+                $this->messages[] = "File '$fileName' exists and was not overwritten.";
                 return $this;
             }
 
-            if(!$this->files->isDirectory(app_path($pathPrefix))) {
-                $this->files->makeDirectory(app_path("$pathPrefix"));
+//            dd($pathPrefix);
+
+            if(!$this->files->isDirectory($pathPrefix)) {
+                $this->files->makeDirectory("$pathPrefix");
             }
 
-//            dd($this->model->fillable);
-
-            $content = $this->build($target);
+            $content = $this->build($target, $variables);
             if($content) {
-                $this->files->put("$path", $content);
-                $this->created[] = $path;
+                $this->files->put("$pathPrefix/$fileName", $content);
+                $this->created[] = "$pathPrefix/$fileName";
             } else {
                 $this->messages[] = "File stub $target not found.";
             }
 
             return $this;
-        }
+
+    }
+
+    public function compileVariable($string) {
+        $model = $this->model;
+        ob_start();
+        eval( "echo $string;");
+        $output = ob_get_contents();
+        ob_end_clean();
+        return $output;
     }
 
 
