@@ -1,0 +1,153 @@
+<template>
+    <div class="form-group" v-if="editing">
+        <label v-if="label">{{label}}</label>
+        <div class="input-group">
+            <input type="text"
+                   class="form-control"
+                   v-model="value"
+                   ref="field"
+                   @keyup.enter="save"
+                   @keydown.tab="save"
+                   @focus="focus"
+                   @blur="blur"
+                   :class="{ active: fieldActive }"
+            >
+            <div class="input-group-append" @click="save">
+            <span>
+                <span v-show="!form.busy && fieldActive">
+                    &nbsp;<i class="fas fa-save fa-fw text-muted"></i>
+                </span>
+                <span v-show="form.busy">
+                   &nbsp;<i class="fal fa-spinner-third fa-spin"></i>
+                </span>
+                <span v-show="!fieldActive && !form.busy"  @click="focus">
+                    &nbsp;<i class="fas fa-pencil fa-fw text-muted"></i>
+                </span>
+            </span>
+            </div>
+            <small class="invalid-feedback" v-if="form.errors.has(field)">
+                {{ form.errors.get(field) }}
+            </small>
+            <small class="valid-feedback" v-if="form.successful">
+                Saved
+            </small>
+        </div>
+    </div>
+</template>
+<script>
+    export default {
+        name: 'EditField',
+        mixins: [],
+        props: {
+            module: {
+                required: true,
+                type: String
+            },
+            field: {
+                required: true,
+                type: String
+            },
+            label: {
+                required: false,
+                type: String
+            },
+            item: {
+                required: false,
+                type: Object
+            },
+            editing: {
+                required: false,
+                type: Boolean,
+                default: true,
+            }
+        },
+        components: {},
+        data() {
+            return {
+                form: new Form({}),
+                value: '',
+                fieldActive: false,
+            }
+        },
+        mounted() {
+            this.form[this.field] = '';
+            if(!_.isEmpty(this.activeItem)) {
+                this.form.id = this.activeItem.id
+            }
+            if(!_.isEmpty(this.activeItem)) {
+                this.form[this.field] = this.activeItem[this.field];
+                this.value = this.activeItem[this.field];
+            }
+        },
+        computed: {
+            saveAction: function() {
+                let module = this.module;
+                return `${module}/updateInstance`
+            },
+            activeItem: function() {
+                if(_.isEmpty(this.item)) {
+                    return this.$store.state[this.module].active;
+                }
+                return this.item;
+            }
+        },
+        watch: {
+            activeItem: function(value) {
+                this.form.id = value.id;
+                console.log('ACTIVE ITEM CHANGED');
+                console.log(value[this.field]);
+                this.value = value[this.field];
+            },
+            value: function(value) {
+                this.form[this.field] = value;
+            }
+        },
+        methods: {
+            save: function() {
+                if(this.fieldActive && !this.form.busy) {
+                    this.$store.dispatch(this.saveAction, this.form)
+                        .then(()=>{
+                            this.fieldActive = false;
+                        })
+                }
+            },
+            focus: function() {
+                this.fieldActive = true;
+                this.$refs.field.focus();
+            },
+            blur: function() {
+                this.fieldActive = false;
+                this.$refs.field.blur();
+
+            }
+        }
+    }
+</script>
+<style scoped>
+    input[type=text] {
+        border: 0;
+        box-shadow:none;
+        outline-color: transparent;
+        outline-style: none;
+        border-bottom: 1px solid #ddd;
+
+    }
+    input[type=text].active {
+        border-bottom: 1px solid #999;
+    }
+    .form-control {
+        padding:0;
+        height:inherit;
+    }
+    .input-group-append {
+        padding: 0 0.5rem 0 0.5rem;
+    }
+
+    .fa-pencil {
+        cursor:pointer;
+    }
+    .success-feedback {
+        color:green;
+    }
+
+</style>

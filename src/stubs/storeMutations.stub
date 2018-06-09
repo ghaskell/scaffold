@@ -1,0 +1,16 @@
+export default {
+
+    SET_LIST (state, skills) {
+        console.log(skills);
+        state.list = skills;
+    },
+    DELETE (state, tag) {
+        state.list = state.list.filter(item => item.id !== tag.id);
+    },
+    SET_ACTIVE (state, tag) {
+        state.active = tag;
+    },
+    API_FAILURE (state, response) {
+        state.error = response
+    },
+}

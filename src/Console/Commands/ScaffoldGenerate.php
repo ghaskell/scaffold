@@ -62,15 +62,27 @@ class ScaffoldGenerate extends Command
     public function handle()
     {
         $this->getMigrations();
-        foreach ($this->migrations as $migration) {
+        $files = config('scaffold.files');
+
+        $migration = $this->choice('Generate from which migration?', $this->migrations);
+        $key = $this->choice('Generate which file?', array_keys($files));
+//        $file = $files[$key];
+
+
+//        foreach ($this->migrations as $migration) {
             $this->line("------------------------------------------------------------------------------------------------------------------");
             $this->info("Generating for {$migration}");
             $this->line("------------------------------------------------------------------------------------------------------------------");
-            $files = config('scaffold.files');
             $scaffold = Scaffold::make($migration);
-            foreach($files as $key => $file) {
-                $scaffold->generate($key);
+            $file = $files[$key];
+            $scaffold->generate($key);
+            if(!empty($file['dependencies'])) {
+                foreach($file['dependencies'] as $dependency)
+                {
+                    $scaffold->generate($dependency);
+                }
             }
+            
             $scaffold->addRoutes();
 
             foreach($scaffold->created as $created) {
@@ -81,7 +93,7 @@ class ScaffoldGenerate extends Command
             }
             $this->line("------------------------------------------------------------------------------------------------------------------");
 
-        }
+//        }
     }
     protected function getMigrations()
     {

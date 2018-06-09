@@ -19,7 +19,12 @@ class ColumnPattern
         $column  = new ColumnPattern();
         $column->name = $name;
         $column->type = $type;
-        $column->config = config("scaffold.columnTypes.$type");
+        if(!empty(config("scaffold.columnTypes.$type"))) {
+            foreach(config("scaffold.columnTypes.$type") as $key => $value) {
+                $key = str_replace('"', "", $key);
+                $column->{$key} = $value;
+            }
+        }
         return $column;
     }
 }
