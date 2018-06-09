@@ -3,6 +3,7 @@
 namespace Ghaskell\Scaffold;
 
 use Ghaskell\Scaffold\Facades\Vibro;
+use Ghaskell\Scaffold\ScaffoldException;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -106,6 +107,7 @@ class Scaffold
         return app_path("Scaffold/stubs/$stub.stub");
     }
 
+    
     public function addRoutes()
     {
         foreach(config('scaffold.routes') as $key => $route)
@@ -133,39 +135,45 @@ class Scaffold
 
     public function generate($file)
     {
-            $target = Str::camel(str_replace('build', '', $file));
-            $config = config("scaffold.files.$target");
-            $pathPrefix = $config['path'];
-            $variables = ['model' => $this->model];
-
-            if(!empty(config("scaffold.variables"))) {
-                foreach (config("scaffold.variables") as $variable => $value) {
-                    $variables[$variable] = $this->compileVariable($value);
-                }
+        $target = Str::camel(str_replace('build', '', $file));
+        $config = config("scaffold.files.$target");
+        if(empty($config)) {
+            throw new ScaffoldException("Configuration for $file not found");
+        }
+        if(array_key_exists('dedependencies', $config)) {
+            foreach($config['dependencies'] as $dependency) {
+                $this->generate($dependency); //recursively generate dependencies
             }
+        }
+        $pathPrefix = $config['path'];
+        $variables = ['model' => $this->model];
 
-            $fileName = Vibro::compileFileName($config['fileNamePattern'], $variables);
-            $pathPrefix = base_path(Vibro::compileFileName("$pathPrefix", $variables));
-            if($this->files->exists("$pathPrefix/$fileName")) {
-                $this->messages[] = "File '$fileName' exists and was not overwritten.";
-                return $this;
+        if(!empty(config("scaffold.variables"))) {
+            foreach (config("scaffold.variables") as $variable => $value) {
+                $variables[$variable] = $this->compileVariable($value);
             }
+        }
 
-//            dd($pathPrefix);
-
-            if(!$this->files->isDirectory($pathPrefix)) {
-                $this->files->makeDirectory("$pathPrefix");
-            }
-
-            $content = $this->build($target, $variables);
-            if($content) {
-                $this->files->put("$pathPrefix/$fileName", $content);
-                $this->created[] = "$pathPrefix/$fileName";
-            } else {
-                $this->messages[] = "File stub $target not found.";
-            }
-
+        $fileName = Vibro::compileFileName($config['fileNamePattern'], $variables);
+        $pathPrefix = base_path(Vibro::compileFileName("$pathPrefix", $variables));
+        if($this->files->exists("$pathPrefix/$fileName")) {
+            $this->messages[] = "File '$fileName' exists and was not overwritten.";
             return $this;
+        }
+
+        if(!$this->files->isDirectory($pathPrefix)) {
+            $this->files->makeDirectory("$pathPrefix");
+        }
+
+        $content = $this->build($target, $variables);
+        if($content) {
+            $this->files->put("$pathPrefix/$fileName", $content);
+            $this->created[] = "$pathPrefix/$fileName";
+        } else {
+            $this->messages[] = "File stub $target not found.";
+        }
+
+        return $this;
 
     }
 
@@ -175,6 +183,7 @@ class Scaffold
         eval( "echo $string;");
         $output = ob_get_contents();
         ob_end_clean();
+
         return $output;
     }
 

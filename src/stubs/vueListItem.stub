@@ -1,25 +1,11 @@
 <template>
     <tr>
-        <td>
-            <edit-field module="assets" field="model" v-if="editing"></edit-field>
-            <span v-else>{{data.model}}</span>
-        </td>
-        <td>
-            <edit-field module="assets" field="serial" v-if="editing">  </edit-field>
-            <span v-else>{{data.serial}}</span>
-        </td>
-        <td class="table__status">
-            <span>{{data.created_at | mediumDate}}</span>
-            <!-- <span class="status__warning">
-                <i class="fas fa-minus-circle"></i>
-                Low Budget
-            </span>
-            <span class="status__error">
-                <i class="fas fa-times-circle"></i>
-                Low Budget
-            </span> -->
-        </td>
-        <td></td>
+        @%foreach($model->columns as $column)
+            <td>
+                <edit-field module="*|$lowerPlural|*" field="*|$column->name|*" v-if="editing"></edit-field>
+                <span v-else>{{data.name}}</span>
+            </td>
+        @%endforeach
         <td class="table__actions">
             <div v-show="!editing">
                 <a href="#" @click="editItem"><i class="fas fa-pencil-alt"></i></a>
@@ -28,15 +14,18 @@
                 <a href="#" @click="clearItem"><i class="fas fa-times"></i></a>
             </div>
         </td>
+        <td class="table__status">
+            <span>0</span>
+        </td>
+
 
     </tr>
 </template>
 <script>
 
 
-
     export default {
-        name: 'AssetListItem',
+        name: '*|$model->name|*ListItem',
         mixins: [],
         props: {
             data: {
@@ -46,26 +35,22 @@
         components: {},
         data() {
             return {
-                // customer: {},
                 edit: false,
             }
 
         },
-        mounted() {
-            // this.customer = this.data;
-        },
         computed: {
             editing: function() {
-                return !!(this.$store.state.assets.active && this.$store.state.assets.active.id === this.data.id);
+                return !!(this.$store.state.*|$lowerPlural|*.active && this.$store.state.*|$lowerPlural|*.active.id === this.data.id);
             }
         },
         watch: {},
         methods: {
             editItem() {
-                this.$store.dispatch('assets/setActive', this.data)
+                this.$store.dispatch('*|$lowerPlural|*/setActive', this.data)
             },
             clearItem() {
-                this.$store.dispatch('assets/clearActive')
+                this.$store.dispatch('*|$lowerPlural|*/clearActive')
             }
         }
     }

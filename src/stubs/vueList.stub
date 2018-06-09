@@ -1,35 +1,33 @@
 <template>
     <div class="bg-white container">
-    <h1>
-        <%$model->name%>
-    </h1>
+        <h1 class="mt-2">*|$plural|*</h1>
         <table class="table table-bordered table__admin">
             <thead>
             <tr>
-                <th colspan = 999>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Employees With Skill
+                </th>
+                <th>
+                    Action
                 </th>
             </tr>
             </thead>
             <tbody>
-                <template v-for="<%strtolower($model->name)$> in <%strtolower(str_plural(($model->name)$>">
-                    <<%strtolower($model->name)$>-list-item :data="asset"></<%strtolower($model->name)$>-list-item>
+                <template v-for="*|$lower|* in *|$lowerPlural|*">
+                    <*|$listItem|* :data="*|$lower|*"></*|$listItem|*>
                 </template>
             </tbody>
             <tfoot>
             <tr>
                 <td colspan="100">
                     <div class="table__controls table__footer-utilities">
-                        <!--<a href="#">-->
-                            <!--<i class="fas fa-trash-alt"></i>-->
-                        <!--</a>-->
 
-                        <!--<a href="#">-->
-                            <!--<i class="fas fa-upload"></i>-->
-                        <!--</a>-->
-
-                        <!--<a href="#">-->
-                            <!--<i class="fas fa-download"></i>-->
-                        <!--</a>-->
                     </div>
                     <div class="table__controls table__footer-add">
                         <a href="#" @click.stop.prevent="openNewModal">
@@ -44,18 +42,15 @@
 </template>
 
 <script>
-    import <%$model->name%>ListItem from './<%strtolower($model->name)$>-list-item';
+    import *|$model->name|*ListItem from './*|$listItem|*';
     import { mapActions } from 'vuex';
 
     export default {
-        name: '<%$model->name%>List',
+        name: '*|$model->name|*List',
         props: {
-            module: {
-                required: true,
-            }
         },
         mixins: [],
-        components: {<%$model->name%>ListItem},
+        components: {*|$model->name|*ListItem},
         data() {
             return {}
 
@@ -64,9 +59,9 @@
 
         },
         computed: {
-        <%strtolower($model->name)%>: {
+        *|$lowerPlural|*: {
                 get () {
-                    return this.$store.state[this.module].active.<%strtolower(str_plural($model->name))%>
+                    return this.$store.state.*|$lowerPlural|*.list
                 },
                 set (value) {
                     this.setList(value);
@@ -75,7 +70,15 @@
         },
         watch: {},
         methods: {
-
+            ...mapActions({
+            }),
+            openNewModal: function() {
+                this.$store.dispatch('page/loadModalComponent', {
+                    title: "Create New Skill",
+                    component: 'skill-form',
+                }, { root: true });
+                this.$store.dispatch('page/openModal', {}, { root: true });
+            },
         }
     }
 </script>

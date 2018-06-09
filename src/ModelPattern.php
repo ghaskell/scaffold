@@ -72,6 +72,7 @@ class ModelPattern
                     preg_match("/['](.*?)[']/", $line, $name);
                     $this->columns[] = Column::make($name[1], $type[0]);
             }
+
         }
         return $this;
     }
@@ -83,22 +84,22 @@ class ModelPattern
     }
 
     private function processColumn($column) {
-        if (!empty($column->config['fillable'])) {
+        if (!empty($column->fillable)) {
             $this->fillable[] = $column->name;
         }
 
-        if (!empty($column->config['dates'])) {
+        if (!empty($column->dates)) {
             $this->dates[] = $column->name;
         }
 
-        if (!empty($column->config['touches'])) {
+        if (!empty($column->touches)) {
             $this->touches[] = $column->name;
         }
 
-        if (!empty($column->config['casts'])) {
+        if (!empty($column->casts)) {
             $this->casts[$column->name] = $column->config['casts'];
         }
-        if (!empty($column->config['rules'])) {
+        if (!empty($column->rules)) {
             $this->rules[$column->name] = $column->config['rules'];
         }
     }

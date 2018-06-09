@@ -30,6 +30,50 @@ return [
             'path' => 'resources/views/*|strtolower($model->name)|*',
             'fileNamePattern' => 'show.blade.php',
         ],
+        'editField' => [
+            'path' => 'resources/assets/js/components/global',
+            'fileNamePattern' => 'edit-field.vue',
+        ],
+        'vueForm' => [
+            'path' => 'resources/assets/js/components/*|$lower|*',
+            'fileNamePattern' => '*|$lower|*-form.vue',
+            'dependencies' => [
+                'storeActions',
+                'storeIndex',
+                'storeMutations',
+                'storeMutationTypes'
+            ]
+        ],
+        'vueList' => [
+            'path' => 'resources/assets/js/components/*|$lower|*',
+            'fileNamePattern' => '*|$lower|*-list.vue',
+            'dependencies' => [
+                'vueListItem'
+            ]
+        ],
+        'vueListItem' => [
+            'path' => 'resources/assets/js/components/*|$lower|*',
+            'fileNamePattern' => '*|$lower|*-list-item.vue',
+            'dependencies' => [
+                'editField'
+            ]
+        ],
+        'storeActions' => [
+            'path' => 'resources/assets/js/store/modules/*|$lowerPlural|*',
+            'fileNamePattern' => 'index.js',
+        ],
+        'storeIndex' => [
+            'path' => 'resources/assets/js/store/modules/*|$lowerPlural|*',
+            'fileNamePattern' => 'index.js',
+        ],
+        'storeMutations' => [
+            'path' => 'resources/assets/js/store/modules/*|$lowerPlural|*',
+            'fileNamePattern' => 'mutations.js',
+        ],
+        'storeMutationTypes' => [
+            'path' => 'resources/assets/js/store/modules/*|$lowerPlural|*',
+            'fileNamePattern' => 'mutation-types.js',
+        ],
         'index' => [
             'path' => 'resources/views/*|strtolower($model->name)|*',
             'fileNamePattern' => 'index.blade.php',
@@ -37,6 +81,12 @@ return [
     ],
     'variables' => [
         'lower' => 'strtolower($model->name)',
+        'listItem' => 'strtolower($model->name) . "-list-item"',
+        'list' => 'strtolower($model->name) . "-list"',
+        'lowerPlural' => 'Illuminate\Support\Str::plural(strtolower($model->name))',
+        'plural' => 'Illuminate\Support\Str::plural($model->name)',
+        'vueFormName' => 'strtolower($model->name) . \'-form\'',
+
     ],
 
     'columnTypes' => [
@@ -108,7 +158,7 @@ return [
         'softDeletes' => '',
         'softDeletesTz' => '',
         'string' => [
-            'fillable' => false,
+            'fillable' => true,
             'dates' => false,
             'touches' => false,
             'casts' => false,

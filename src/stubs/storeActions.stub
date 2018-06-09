@@ -1,0 +1,57 @@
+import api from '../../api';
+import * as Types from './mutation-Types';
+
+const actions = {
+    getList: (context) => {
+        return api.get('/api/*|$lowerPlural|*')
+            .then((response) => {
+                context.commit(Types.SET_LIST, response)
+            })
+            .catch((error) => context.commit('API_FAILURE', error));
+    },
+    setList: (context, *|$lowerPlural|*) => {
+        context.commit(Types.SET_LIST, *|$lowerPlural|*);
+    },
+    setActive: (context, type) => {
+        context.commit(Types.SET_ACTIVE, type);
+    },
+    clearActive: (context) => {
+        context.commit(Types.SET_ACTIVE, {});
+    },
+    getInstance: (context, id) => {
+        return api.get(`/api/*|$lowerPlural|*/${id}`)
+            .then((response) => context.commit(Types.SET_ACTIVE, response.data))
+            .catch((error) => context.commit(Types.API_FAILURE, error));
+    },
+    createInstance: (context, data) => {
+        return api.post('/api/*|$lowerPlural|*', data)
+            .then((response) => {
+              context.commit(Types.SET_ACTIVE, {});
+              swal("Skill Added!", "A new *|$lower|* has been added", "success");
+              context.dispatch('getList');
+              context.dispatch('page/closeModal', null, {root: true});
+            })
+            .catch((error) => context.commit(Types.API_FAILURE, error));
+    },
+    updateInstance: (context, form) => {
+        form.startProcessing();
+        return api.patch(`/api/*|$lowerPlural|*/${form.id}`, form)
+            .then((response) => {
+                context.dispatch('getList');
+                form.finishProcessing();
+            })
+            .catch((error) => {
+                context.commit(Types.API_FAILURE, error);
+                form.finishProcessing();
+                form.errors.set(error.data.errors);
+            });
+    },
+    deleteInstance: (context, type) => {
+        return api.delete(`/api/*|$lowerPlural|*/${type.id}`)
+            .then((response) => context.commit(Types.DELETE, type))
+            .catch((error) => context.commit(Types.API_FAILURE, error));
+    }
+};
+
+
+export default actions
