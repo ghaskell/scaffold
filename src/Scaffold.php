@@ -107,6 +107,7 @@ class Scaffold
         return app_path("Scaffold/stubs/$stub.stub");
     }
 
+    
     public function addRoutes()
     {
         foreach(config('scaffold.routes') as $key => $route)
