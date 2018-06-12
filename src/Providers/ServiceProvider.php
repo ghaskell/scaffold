@@ -33,6 +33,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     }
     public function register()
     {
+
         $this->mergeConfigFrom(
             $this->configPath,
             'scaffold'
