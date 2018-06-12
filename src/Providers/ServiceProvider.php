@@ -7,7 +7,7 @@ use Ghaskell\Scaffold\Facades\Code;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    const CONFIG_PATH = realpath(__DIR__ . './../../config/scaffold.php');
+    const CONFIG_PATH = __DIR__ . './../../config/scaffold.php';
 
     protected $configPath;
 
