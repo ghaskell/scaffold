@@ -20,7 +20,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         Code::addExtension('stub',  'vibro');
         $this->publishes([
             $this->configPath => config_path('scaffold.php'),
-        ], 'Scaffold');
+        ], 'config');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -29,10 +29,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         }
         $this->publishes([
             realpath(__DIR__ . '/../stubs') => app_path('Scaffold/stubs')
-        ], 'Scaffold');
+        ], 'Scaffold Stubs');
     }
     public function register()
     {
+
         $this->mergeConfigFrom(
             $this->configPath,
             'scaffold'
