@@ -35,7 +35,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
 
         $this->mergeConfigFrom(
-            realpath(__DIR__ . './../../config/scaffold.php'),
+            __DIR__ . './../../config/scaffold.php',
             'scaffold'
         );
     }
