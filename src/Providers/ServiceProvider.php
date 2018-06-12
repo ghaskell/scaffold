@@ -7,14 +7,20 @@ use Ghaskell\Scaffold\Facades\Code;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    const CONFIG_PATH = __DIR__ . './../../config/scaffold.php';
+    protected $configPath;
+
+    public function __construct(\Illuminate\Contracts\Foundation\Application $app)
+    {
+        $this->configPath = realpath(__DIR__ . './../../config/scaffold.php');
+        parent::__construct($app);
+    }
 
     public function boot()
     {
         Code::addExtension('stub',  'vibro');
         $this->publishes([
-            self::CONFIG_PATH => config_path('scaffold.php'),
-        ], 'config');
+            $this->configPath => config_path('scaffold.php'),
+        ], 'Scaffold');
 
         if ($this->app->runningInConsole()) {
             $this->commands([
@@ -23,12 +29,12 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         }
         $this->publishes([
             realpath(__DIR__ . '/../stubs') => app_path('Scaffold/stubs')
-        ], 'Scaffold Stubs');
+        ], 'Scaffold');
     }
     public function register()
     {
         $this->mergeConfigFrom(
-            self::CONFIG_PATH,
+            $this->configPath,
             'scaffold'
         );
     }
